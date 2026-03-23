@@ -1,0 +1,825 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>💙 A Magical Message For You 💙</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+/* ================================================================
+   💙  MAGICAL BUTTERFLY MESSAGE  ·  Styles
+================================================================ */
+
+:root {
+  --royal:  #4169E1;
+  --royalL: #6a8ef0;
+  --lavnd:  #c5b8f8;
+  --pink:   #f8b8d0;
+  --sky:    #87CEEB;
+  --navy:   #060118;
+}
+
+*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+html, body { width:100%; height:100%; overflow:hidden; background:var(--navy);
+  font-family:'Quicksand', 'Arial Rounded MT Bold', sans-serif; }
+
+/* ── Background ── */
+#bg {
+  position:fixed; inset:0; z-index:0;
+  background:
+    radial-gradient(ellipse at 22% 12%, rgba(65,105,225,.28) 0%, transparent 52%),
+    radial-gradient(ellipse at 78% 88%, rgba(197,184,248,.14) 0%, transparent 48%),
+    linear-gradient(165deg, #110640 0%, #08031e 45%, #040112 100%);
+}
+
+/* ── Starfield ── */
+#starfield { position:fixed; inset:0; z-index:1; pointer-events:none; }
+.star {
+  position:absolute; border-radius:50%; background:#fff;
+  animation: twinkle var(--d) ease-in-out infinite var(--del);
+}
+@keyframes twinkle {
+  0%,100% { opacity:var(--lo,.08); transform:scale(1); }
+  50%     { opacity:var(--hi,.75); transform:scale(1.6); }
+}
+
+/* ── Ambient floating particles ── */
+.ambient {
+  position:absolute; border-radius:50%; pointer-events:none; z-index:3;
+  animation: ambFloat var(--d) ease-in-out var(--del) both;
+}
+@keyframes ambFloat {
+  0%   { opacity:0; transform:translateY(0px) scale(.5); }
+  18%  { opacity:.75; transform:scale(1); }
+  82%  { opacity:.45; }
+  100% { opacity:0; transform:translateY(-90px) scale(.3); }
+}
+
+/* ── Scene ── */
+#scene { position:relative; z-index:2; width:100vw; height:100vh; }
+
+/* ── Butterfly wrapper ── */
+#bfWrap { position:absolute; inset:0; pointer-events:none; }
+.bf {
+  position:absolute; pointer-events:none; will-change:left,top;
+  transition:opacity .7s ease;
+}
+.bf svg {
+  animation: bob var(--bd,3s) ease-in-out infinite var(--bddel,0s);
+  filter:
+    drop-shadow(0 0  6px var(--gc,#4169E1))
+    drop-shadow(0 0 18px color-mix(in srgb, var(--gc,#4169E1) 50%, transparent));
+}
+@keyframes bob {
+  0%,100% { transform:translateY(0px) rotate(var(--rot,0deg)); }
+  50%     { transform:translateY(-9px) rotate(calc(var(--rot,0deg) + 5deg)); }
+}
+
+/* Wing flap */
+.wl, .wr { transform-box:fill-box; }
+.wl { animation:wlF var(--fs,.4s) ease-in-out infinite; transform-origin:right center; }
+.wr { animation:wrF var(--fs,.4s) ease-in-out infinite; transform-origin:left  center; }
+@keyframes wlF { 0%,100%{transform:scaleX(1)} 50%{transform:scaleX(0.06)} }
+@keyframes wrF { 0%,100%{transform:scaleX(1)} 50%{transform:scaleX(0.06)} }
+
+/* ── Text overlay ── */
+#txtLayer {
+  position:absolute; inset:0; z-index:10; pointer-events:none;
+  display:flex; flex-direction:column;
+  align-items:center; justify-content:center;
+  padding:24px; text-align:center;
+}
+.mt {
+  font-family:'Quicksand', sans-serif; font-weight:700;
+  font-size:clamp(20px, 4.8vw, 56px);
+  color:#fff; letter-spacing:3px; line-height:1.55; margin-bottom:10px;
+  text-shadow:
+    0 0 14px var(--royal), 0 0 34px var(--royal),
+    0 0 60px rgba(65,105,225,.42);
+  opacity:0; transform:translateY(15px) scale(.94);
+  transition:opacity 1s ease, transform 1s ease;
+}
+.mt.on {
+  opacity:1; transform:translateY(0) scale(1);
+  animation: mtGlow 2.8s ease-in-out infinite,
+             mtFloat 3.3s ease-in-out infinite;
+}
+.mt.boing {
+  animation: boing .68s cubic-bezier(.36,.07,.19,.97) both,
+             mtGlow 2.8s ease-in-out .68s infinite,
+             mtFloat 3.3s ease-in-out .68s infinite;
+  opacity:1; transform:none;
+}
+@keyframes mtGlow {
+  0%,100% { text-shadow:0 0 14px var(--royal), 0 0 34px var(--royal); }
+  50%     { text-shadow:0 0 28px var(--royal), 0 0 62px var(--royal),
+                        0 0 95px rgba(65,105,225,.52); }
+}
+@keyframes mtFloat { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-7px)} }
+@keyframes boing {
+  0%   { transform:scale(.12) translateY(-70px); opacity:0; }
+  55%  { transform:scale(1.18) translateY(6px);  opacity:1; }
+  76%  { transform:scale(.94) translateY(-3px); }
+  100% { transform:scale(1) translateY(0); opacity:1; }
+}
+
+/* ── Buttons ── */
+#btns {
+  position:absolute; bottom:22%; left:50%;
+  transform:translateX(-50%);
+  display:flex; gap:28px; z-index:20;
+  opacity:0; pointer-events:none;
+  transition:opacity .85s ease;
+}
+#btns.on { opacity:1; pointer-events:all; }
+
+.mbtn {
+  font-family:'Quicksand',sans-serif; font-weight:700;
+  font-size:clamp(13px,1.8vw,17px); letter-spacing:2px;
+  padding:13px 30px; border-radius:50px;
+  border:2px solid rgba(255,255,255,.22);
+  cursor:pointer; color:#fff; white-space:nowrap;
+  background:rgba(65,105,225,.18); backdrop-filter:blur(14px);
+  box-shadow:0 0 24px rgba(65,105,225,.3), inset 0 0 22px rgba(255,255,255,.04);
+  transition:transform .3s ease, box-shadow .3s ease, border-color .3s ease;
+  position:relative; overflow:hidden;
+}
+.mbtn::before {
+  content:''; position:absolute; inset:0; border-radius:50px; pointer-events:none;
+  background:linear-gradient(135deg, rgba(255,255,255,.13), transparent 55%);
+}
+#hamBtn:hover {
+  transform:scale(1.11);
+  box-shadow:0 0 42px rgba(65,105,225,.7), inset 0 0 24px rgba(255,255,255,.08);
+  border-color:rgba(255,255,255,.58);
+}
+#samBtn {
+  background:rgba(197,184,248,.15); border-color:rgba(197,184,248,.22);
+  box-shadow:0 0 22px rgba(197,184,248,.24);
+  transition:transform .22s cubic-bezier(.25,.46,.45,.94), box-shadow .3s ease;
+  cursor:default;
+}
+
+/* ── Sparkles ── */
+.sp {
+  position:absolute; pointer-events:none; z-index:15;
+  clip-path:polygon(50% 0%,61% 35%,98% 35%,68% 57%,
+                    79% 91%,50% 70%,21% 91%,32% 57%,2% 35%,39% 35%);
+  animation:spPop var(--d,1s) ease-out var(--del,0s) both;
+}
+@keyframes spPop {
+  0%   { transform:scale(0) rotate(0deg); opacity:1; }
+  42%  { transform:scale(1.15) rotate(var(--r1,200deg)); opacity:.88; }
+  100% { transform:scale(0) rotate(var(--r2,400deg))
+                  translate(var(--dx,0px),var(--dy,-65px)); opacity:0; }
+}
+
+/* ── Flower rain ── */
+#flowers { position:absolute; inset:0; z-index:8; pointer-events:none; overflow:hidden; }
+.fl {
+  position:absolute; top:-80px; pointer-events:none; opacity:0;
+  animation:flFall var(--d) linear var(--del) both;
+}
+@keyframes flFall {
+  0%  { top:-80px; opacity:0; transform:rotate(0deg) translateX(0); }
+  9%  { opacity:.9; }
+  86% { opacity:.7; }
+  100%{ top:108vh;  opacity:0; transform:rotate(var(--spin)) translateX(var(--drift)); }
+}
+
+/* ── Final large butterfly ── */
+#finalBf {
+  position:absolute; z-index:25; pointer-events:none;
+  opacity:1;
+  transition:left 3.2s cubic-bezier(.25,.46,.45,.94);
+}
+#finalBfInner {
+  filter:
+    drop-shadow(0 0 18px #4169E1)
+    drop-shadow(0 0 42px rgba(65,105,225,.68))
+    drop-shadow(0 0 80px rgba(65,105,225,.32));
+  animation:bigBob 2.5s ease-in-out infinite;
+}
+@keyframes bigBob {
+  0%,100% { transform:translateY(0px) rotate(-2deg); }
+  50%     { transform:translateY(-16px) rotate(2.5deg); }
+}
+
+/* ── Trail glow particles ── */
+.trail {
+  position:absolute; border-radius:50%; pointer-events:none;
+  animation:trailFade var(--d,.9s) ease-out forwards; z-index:24;
+}
+@keyframes trailFade { 0%{opacity:.78;transform:scale(1)} 100%{opacity:0;transform:scale(.1)} }
+
+/* ── Screen flash ── */
+#flash {
+  position:fixed; inset:0; z-index:100; pointer-events:none;
+  background:radial-gradient(circle at center, #a8c8ff, #4169E1);
+  opacity:0; transition:opacity .35s ease;
+}
+#flash.on { opacity:.7; }
+
+/* ── Responsive ── */
+@media (max-width:480px) {
+  .mt  { font-size:clamp(15px,5.5vw,26px); letter-spacing:1.5px; }
+  .mbtn{ font-size:12px; padding:10px 18px; }
+  #btns{ gap:14px; }
+}
+</style>
+</head>
+<body>
+
+<!-- Layers -->
+<div id="bg"></div>
+<div id="starfield"></div>
+<div id="flash"></div>
+
+<!-- Main scene -->
+<div id="scene">
+  <div id="bfWrap"></div>
+  <div id="txtLayer"></div>
+
+  <div id="btns">
+    <button class="mbtn" id="hamBtn">💙 IM HAM PAM 💙</button>
+    <button class="mbtn" id="samBtn">🌸 IM SAM SAM 🌸</button>
+  </div>
+
+  <div id="flowers"></div>
+
+  <!-- Final large butterfly (content injected by JS) -->
+  <div id="finalBf"><div id="finalBfInner"></div></div>
+</div>
+
+<!-- Hidden canvas for pixel-based text position sampling -->
+<canvas id="c" style="visibility:hidden;position:fixed;top:-9999px;left:-9999px;"></canvas>
+
+<script>
+/* ================================================================
+   💙  MAGICAL BUTTERFLY MESSAGE  ·  Script
+================================================================ */
+
+/* ── Utilities ──────────────────────────────────────────── */
+const $    = id => document.getElementById(id);
+const W    = () => window.innerWidth;
+const H    = () => window.innerHeight;
+const rng  = (a,b) => a + Math.random()*(b-a);
+const clp  = (v,lo,hi) => Math.max(lo, Math.min(hi,v));
+const pick = a => a[Math.floor(Math.random()*a.length)];
+const sleep = ms => new Promise(r => setTimeout(r,ms));
+
+/* ── DOM refs ───────────────────────────────────────────── */
+const bfWrap   = $('bfWrap');
+const txtLayer = $('txtLayer');
+const btnsEl   = $('btns');
+const flowersEl = $('flowers');
+const finalBfEl = $('finalBf');
+const finalInEl = $('finalBfInner');
+const flashEl   = $('flash');
+const cvs       = $('c');
+const cctx      = cvs.getContext('2d');
+
+/* ── Stars ──────────────────────────────────────────────── */
+const sf = $('starfield');
+for (let i=0; i<145; i++) {
+  const el = document.createElement('div');
+  el.className = 'star';
+  const s = rng(.4,2.9);
+  el.style.cssText = `
+    width:${s}px; height:${s}px;
+    left:${rng(0,100)}%; top:${rng(0,100)}%;
+    --d:${rng(2,5.5).toFixed(1)}s; --del:${rng(0,4).toFixed(1)}s;
+    --lo:${rng(.04,.18).toFixed(2)}; --hi:${rng(.45,.9).toFixed(2)};
+  `;
+  sf.appendChild(el);
+}
+
+/* ── Ambient magical particles ──────────────────────────── */
+const ACOLS = ['#4169E1','#87CEEB','#c5b8f8','#f8b8d0','#fff','#b3c8ff'];
+function spawnAmbient() {
+  const el = document.createElement('div');
+  el.className = 'ambient';
+  const sz = rng(1.5,5.5);
+  const col = pick(ACOLS);
+  el.style.cssText = `
+    left:${rng(0,100)}%; top:${rng(10,90)}%;
+    width:${sz}px; height:${sz}px;
+    background:${col};
+    box-shadow:0 0 ${sz*2.5}px ${col};
+    --d:${rng(3.5,8).toFixed(1)}s; --del:0s;
+  `;
+  $('scene').appendChild(el);
+  setTimeout(()=>el.remove(), 9000);
+}
+setInterval(spawnAmbient, 350);
+
+/* ── Butterfly colour palettes ──────────────────────────── */
+const PAL = [
+  {c1:'#4169E1', c2:'#7398f5', c3:'#b3c8ff', gc:'#4169E1'},
+  {c1:'#3556cc', c2:'#87CEEB', c3:'#cce8ff', gc:'#87CEEB'},
+  {c1:'#4169E1', c2:'#c5b8f8', c3:'#e8e0ff', gc:'#c5b8f8'},
+  {c1:'#2e4abf', c2:'#f8b8d0', c3:'#ffe0ee', gc:'#f8b8d0'},
+  {c1:'#4169E1', c2:'#9bb8ff', c3:'#d4e0ff', gc:'#4169E1'},
+];
+
+/* ── Build butterfly SVG ─────────────────────────────────── */
+function mkSVG(uid, pal, sz=52) {
+  const h = Math.round(sz*.9);
+  return `
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 62 54" width="${sz}" height="${h}">
+  <defs>
+    <radialGradient id="ga${uid}" cx="50%" cy="50%" r="55%">
+      <stop offset="0%"   stop-color="${pal.c3}" stop-opacity=".95"/>
+      <stop offset="100%" stop-color="${pal.c1}" stop-opacity=".98"/>
+    </radialGradient>
+    <radialGradient id="gb${uid}" cx="50%" cy="50%" r="55%">
+      <stop offset="0%"   stop-color="${pal.c2}" stop-opacity=".82"/>
+      <stop offset="100%" stop-color="${pal.c1}" stop-opacity=".9"/>
+    </radialGradient>
+  </defs>
+
+  <!-- ★ Left wings (upper + lower) -->
+  <g class="wl">
+    <path d="M31,27 Q12,4  2,11 Q-5,22  9,26 Q20,31 31,27" fill="url(#ga${uid})"/>
+    <path d="M31,27 Q14,41  6,44 Q0,50  12,51 Q26,51 31,27" fill="url(#gb${uid})"/>
+  </g>
+
+  <!-- ★ Right wings (upper + lower) -->
+  <g class="wr">
+    <path d="M31,27 Q50,4  60,11 Q67,22 53,26 Q42,31 31,27" fill="url(#ga${uid})"/>
+    <path d="M31,27 Q48,41 56,44 Q62,50 50,51 Q36,51 31,27" fill="url(#gb${uid})"/>
+  </g>
+
+  <!-- Body -->
+  <ellipse cx="31" cy="30" rx="2.4" ry="10.5" fill="#1a2980" opacity=".92"/>
+
+  <!-- Antennae -->
+  <path d="M31,20 Q26,12 21,7" stroke="#1a2980" stroke-width="1.3"
+        fill="none" stroke-linecap="round"/>
+  <path d="M31,20 Q36,12 41,7" stroke="#1a2980" stroke-width="1.3"
+        fill="none" stroke-linecap="round"/>
+  <circle cx="21" cy="7"  r="2.3" fill="${pal.c2}"/>
+  <circle cx="41" cy="7"  r="2.3" fill="${pal.c2}"/>
+
+  <!-- Wing shimmer dots -->
+  <circle cx="17" cy="19" r="1.4" fill="${pal.c3}" opacity=".6"/>
+  <circle cx="45" cy="19" r="1.4" fill="${pal.c3}" opacity=".6"/>
+  <circle cx="12" cy="38" r="1.1" fill="${pal.c3}" opacity=".45"/>
+  <circle cx="50" cy="38" r="1.1" fill="${pal.c3}" opacity=".45"/>
+</svg>`;
+}
+
+/* ── Create butterfly elements ────────────────────────────── */
+const N  = 16;
+const bfs = [];
+
+for (let i=0; i<N; i++) {
+  const pal = PAL[i % PAL.length];
+  const fs  = rng(.27,.52).toFixed(2)+'s';
+  const bd  = rng(2.2,4.3).toFixed(1)+'s';
+  const bdd = rng(0,2.6).toFixed(1)+'s';
+  const rot = rng(-14,14).toFixed(0)+'deg';
+  const sc  = rng(.62,1.04).toFixed(2);
+  const x   = rng(0, W()-80);
+  const y   = rng(0, H()-80);
+
+  const div = document.createElement('div');
+  div.className = 'bf';
+  div.id = 'bf'+i;
+  div.style.cssText = `
+    left:${x}px; top:${y}px;
+    --gc:${pal.gc}; --bd:${bd}; --bddel:${bdd}; --rot:${rot};
+    transform:scale(${sc});
+  `;
+  div.innerHTML = mkSVG(i, pal);
+
+  /* per-butterfly flap speed */
+  div.querySelector('.wl')?.style.setProperty('--fs', fs);
+  div.querySelector('.wr')?.style.setProperty('--fs', fs);
+
+  bfWrap.appendChild(div);
+
+  bfs.push({
+    el:div, x, y,
+    vx:rng(-1.8,1.8), vy:rng(-1.8,1.8),
+    st:'float', // 'float' | 'form' | 'hidden'
+  });
+}
+
+/* ── Float animation loop ────────────────────────────────── */
+function floatLoop() {
+  bfs.forEach(b => {
+    if (b.st !== 'float') return;
+    b.x += b.vx;  b.y += b.vy;
+    if (b.x <  0)      { b.x=0;      b.vx= Math.abs(b.vx); }
+    if (b.x > W()-72)  { b.x=W()-72; b.vx=-Math.abs(b.vx); }
+    if (b.y <  0)      { b.y=0;      b.vy= Math.abs(b.vy); }
+    if (b.y > H()-62)  { b.y=H()-62; b.vy=-Math.abs(b.vy); }
+    b.vx += rng(-.07,.07);  b.vy += rng(-.07,.07);
+    b.vx  = clp(b.vx,-2.5,2.5);
+    b.vy  = clp(b.vy,-2.5,2.5);
+    b.el.style.left = b.x+'px';
+    b.el.style.top  = b.y+'px';
+  });
+  requestAnimationFrame(floatLoop);
+}
+floatLoop();
+
+/* ── Canvas text-position sampling ───────────────────────── */
+function samplePts(lines, n) {
+  cvs.width  = W();
+  cvs.height = H();
+  cctx.clearRect(0,0,cvs.width,cvs.height);
+
+  const maxLen = Math.max(...lines.map(l=>l.length));
+  const fSize  = clp(Math.floor(W()/(maxLen*0.62)), 22, 68);
+  const lh     = fSize * 1.6;
+  const totH   = lines.length * lh;
+  const sy     = H()/2 - totH/2 + lh/2;
+
+  cctx.fillStyle   = '#fff';
+  cctx.font        = `700 ${fSize}px Quicksand,Arial Rounded MT Bold,sans-serif`;
+  cctx.textAlign   = 'center';
+  cctx.textBaseline = 'middle';
+  lines.forEach((l,i) => cctx.fillText(l, W()/2, sy + i*lh));
+
+  const data = cctx.getImageData(0,0,cvs.width,cvs.height).data;
+  const pts  = [];
+  const step = clp(Math.floor(W()/52), 5, 20);
+
+  for (let y=0; y<cvs.height; y+=step)
+    for (let x=0; x<cvs.width;  x+=step)
+      if (data[(y*cvs.width+x)*4+3] > 80) pts.push({x,y});
+
+  /* Fisher-Yates shuffle */
+  for (let i=pts.length-1;i>0;i--) {
+    const j=(Math.random()*(i+1))|0;
+    [pts[i],pts[j]]=[pts[j],pts[i]];
+  }
+  return pts.slice(0,n);
+}
+
+/* ── Move butterflies into text formation ─────────────────── */
+function formText(lines, stepMs=55) {
+  const pts = samplePts(lines, N);
+  bfs.forEach((b,i) => {
+    b.st = 'form';
+    const p = pts[i] || {x:rng(W()*.15,W()*.85), y:rng(H()*.3,H()*.7)};
+    const d = i * stepMs;
+    b.el.style.transition =
+      `left 1.75s cubic-bezier(.34,1.56,.64,1) ${d}ms,`+
+      `top  1.75s cubic-bezier(.34,1.56,.64,1) ${d}ms`;
+    b.el.style.left = (p.x-27)+'px';
+    b.el.style.top  = (p.y-22)+'px';
+  });
+}
+
+/* ── Scatter butterflies to random positions ─────────────── */
+function scatter(fast=false) {
+  const dur = fast ? .38 : .78;
+  bfs.forEach((b,i) => {
+    b.x=rng(0,W()-80);  b.y=rng(0,H()-80);
+    b.vx=rng(-2,2);     b.vy=rng(-2,2);
+    b.el.style.transition=
+      `left ${dur}s ease ${i*22}ms, top ${dur}s ease ${i*22}ms`;
+    b.el.style.left = b.x+'px';
+    b.el.style.top  = b.y+'px';
+    setTimeout(()=>{ b.el.style.transition='opacity .7s ease'; b.st='float'; },
+               dur*1000 + i*22 + 130);
+  });
+}
+
+/* ── Show / clear overlay text ───────────────────────────── */
+let txtWrap = null;
+
+function showText(lines, bouncy=false) {
+  clearText();
+  const div = document.createElement('div');
+  div.style.textAlign='center';
+  lines.forEach((line,i) => {
+    const p = document.createElement('p');
+    p.className = 'mt' + (bouncy?' boing':'');
+    p.textContent = line;
+    if (bouncy) p.style.animationDelay = `${i*.22}s`;
+    else setTimeout(()=>p.classList.add('on'), 80 + i*340);
+    div.appendChild(p);
+  });
+  txtLayer.appendChild(div);
+  txtWrap = div;
+}
+
+function clearText() {
+  if (!txtWrap) return;
+  const el=txtWrap; txtWrap=null;
+  el.style.transition='opacity .52s ease, transform .52s ease';
+  el.style.opacity='0';
+  el.style.transform='translateY(-20px) scale(.93)';
+  setTimeout(()=>el.remove(), 570);
+}
+
+/* ── Sparkle burst ────────────────────────────────────────── */
+const SPCOLS = ['#4169E1','#87CEEB','#c5b8f8','#f8b8d0','#fff','#fffacd','#b3c8ff'];
+
+function burst(n=28) {
+  for (let i=0;i<n;i++) {
+    setTimeout(()=>{
+      const sp = document.createElement('div');
+      sp.className='sp';
+      const sz  = rng(5,16);
+      const col = pick(SPCOLS);
+      const dur = rng(.7,1.6).toFixed(2);
+      const ang = rng(0,360);
+      const dst = rng(40,95);
+      sp.style.cssText=`
+        left:${rng(W()*.04,W()*.96)}px; top:${rng(H()*.08,H()*.92)}px;
+        width:${sz}px; height:${sz}px;
+        background:${col}; box-shadow:0 0 ${sz}px ${col};
+        --d:${dur}s; --del:0s;
+        --r1:${rng(90,280)}deg; --r2:${rng(300,560)}deg;
+        --dx:${Math.cos(ang*Math.PI/180)*dst}px;
+        --dy:${Math.sin(ang*Math.PI/180)*dst-48}px;
+        z-index:15;
+      `;
+      $('scene').appendChild(sp);
+      setTimeout(()=>sp.remove(), parseFloat(dur)*1000+160);
+    }, i*42);
+  }
+}
+
+/* ── Flower rain ─────────────────────────────────────────── */
+const FL = ['🌸','🤍','🌺','🌼','🌷','💮','🤍','🌸','✿'];
+let flActive = false;
+
+function startFlowers() {
+  if (flActive) return;
+  flActive = true;
+  (function drop(){
+    for (let i=0;i<7;i++) {
+      setTimeout(()=>{
+        const f = document.createElement('div');
+        f.className='fl'; f.textContent=pick(FL);
+        const d   = rng(5.5,10).toFixed(1);
+        const del = rng(0,.7).toFixed(2);
+        f.style.cssText=`
+          left:${rng(0,99)}%;
+          font-size:${rng(16,30).toFixed(0)}px;
+          --d:${d}s; --del:${del}s;
+          --spin:${rng(-650,650).toFixed(0)}deg;
+          --drift:${rng(-100,100).toFixed(0)}px;
+        `;
+        flowersEl.appendChild(f);
+        setTimeout(()=>f.remove(), (parseFloat(d)+parseFloat(del)+.7)*1000);
+      }, i*175);
+    }
+    if(flActive) setTimeout(drop, 1100);
+  })();
+}
+
+/* ── Final large butterfly with jasmine bouquet ──────────── */
+function showFinalButterfly() {
+  const pal = {c1:'#2845c0',c2:'#87CEEB',c3:'#cce8ff',gc:'#4169E1'};
+  finalInEl.innerHTML = mkSVG('F', pal, 155);
+
+  /* Set flap speed on large butterfly */
+  finalInEl.querySelector('.wl')?.style.setProperty('--fs','.48s');
+  finalInEl.querySelector('.wr')?.style.setProperty('--fs','.48s');
+
+  /* Jasmine bouquet hanging below */
+  const bq = document.createElement('div');
+  bq.style.cssText=`
+    text-align:center; margin-top:-14px;
+    filter:drop-shadow(0 0 12px rgba(255,255,255,.95));
+    line-height:1.35;
+  `;
+  bq.innerHTML=`
+    <div style="font-size:30px">🤍🌸🤍🌸🤍</div>
+    <div style="font-size:22px;margin-top:2px">🌿🤍🌿</div>
+  `;
+  finalInEl.appendChild(bq);
+
+  /* Start off-screen to the right, then fly to centre */
+  const bfW = 160;
+  const bfH = Math.round(155*.9) + 68;
+  finalBfEl.style.transition = 'none';
+  finalBfEl.style.left = (W() + 80) + 'px';
+  finalBfEl.style.top  = (H()/2 - bfH/2) + 'px';
+
+  /* Trigger entrance after a frame */
+  requestAnimationFrame(()=>{
+    requestAnimationFrame(()=>{
+      finalBfEl.style.transition = 'left 3.3s cubic-bezier(.25,.46,.45,.94)';
+      finalBfEl.style.left = (W()/2 - bfW/2) + 'px';
+    });
+  });
+
+  /* Glowing trail while it flies in */
+  const tid = setInterval(()=>{
+    const t = document.createElement('div');
+    t.className='trail';
+    const sz  = rng(5,22);
+    const col = pick(['#4169E1','#87CEEB','#c5b8f8','#fff']);
+    t.style.cssText=`
+      left:${rng(W()/2-100,W()/2+100)}px;
+      top:${rng(H()/2-120,H()/2+100)}px;
+      width:${sz}px; height:${sz}px;
+      background:${col}; opacity:.72;
+      box-shadow:0 0 ${sz}px ${col};
+      --d:${rng(.55,1.25).toFixed(1)}s;
+      z-index:24;
+    `;
+    $('scene').appendChild(t);
+    setTimeout(()=>t.remove(), 1350);
+  }, 115);
+
+  return tid;
+}
+
+/* ── SAM SAM button runs away from cursor ─────────────────── */
+const samBtn = $('samBtn');
+let sx=0, sy=0;
+
+document.addEventListener('mousemove', e=>{
+  if (!btnsEl.classList.contains('on')) return;
+  const r  = samBtn.getBoundingClientRect();
+  const cx = r.left+r.width/2,  cy = r.top+r.height/2;
+  const d  = Math.hypot(e.clientX-cx, e.clientY-cy);
+  const R  = 185;
+  if (d < R) {
+    const ang = Math.atan2(cy-e.clientY, cx-e.clientX);
+    const pow = ((R-d)/R)**2 * 240;
+    sx = clp(sx + Math.cos(ang)*pow*.27, -W()*.4, W()*.4);
+    sy = clp(sy + Math.sin(ang)*pow*.27, -H()*.33, H()*.33);
+    samBtn.style.transform=`translate(${sx}px,${sy}px) scale(.88)`;
+  } else {
+    sx*=.86; sy*=.86;
+    samBtn.style.transform=`translate(${sx}px,${sy}px)`;
+  }
+});
+/* Touch: also nudge away on mobile */
+document.addEventListener('touchmove', e=>{
+  const touch = e.touches[0];
+  if (!btnsEl.classList.contains('on')) return;
+  const r  = samBtn.getBoundingClientRect();
+  const cx = r.left+r.width/2, cy = r.top+r.height/2;
+  const d  = Math.hypot(touch.clientX-cx, touch.clientY-cy);
+  if (d < 160) {
+    const ang = Math.atan2(cy-touch.clientY, cx-touch.clientX);
+    sx = clp(sx + Math.cos(ang)*55, -W()*.4, W()*.4);
+    sy = clp(sy + Math.sin(ang)*55, -H()*.33, H()*.33);
+    samBtn.style.transform=`translate(${sx}px,${sy}px) scale(.88)`;
+  }
+},{passive:true});
+samBtn.addEventListener('click', e=>{e.preventDefault();e.stopPropagation();});
+
+/* ── Flash transition helper ─────────────────────────────── */
+async function flash() {
+  flashEl.classList.add('on');
+  await sleep(330);
+  flashEl.classList.remove('on');
+  await sleep(220);
+}
+
+/* ================================================================
+   MAIN SEQUENCE
+================================================================ */
+async function run() {
+
+  /* ╔══════════════════════════════════════════╗
+     ║  SCENE 1 — Opening floating & greeting   ║
+     ╚══════════════════════════════════════════╝ */
+  await sleep(2300);
+
+  /* Butterflies gather into greeting formation */
+  formText(['HIIII MISSSSSS', 'HOW ARE YOU?']);
+  await sleep(1750);
+  /* Real text fades in with glow, butterflies glitter around it */
+  showText(['HIIII MISSSSSS 💙', 'HOW ARE YOU? 🦋']);
+
+  await sleep(2600);
+  /* Buttons slide in */
+  btnsEl.classList.add('on');
+
+  /* ── Wait for the HAM PAM click ── */
+  await new Promise(ok => $('hamBtn').addEventListener('click', ok, {once:true}));
+
+  /* ╔══════════════════════════════════════════╗
+     ║  SCENE 2 — YIPPPPIIIEEEEE!               ║
+     ╚══════════════════════════════════════════╝ */
+  btnsEl.classList.remove('on');
+  clearText();
+  await flash();
+
+  scatter();
+  burst(16);
+  await sleep(820);
+
+  formText(['YIPPPPIIIEEEEE!  🎉']);
+  await sleep(1720);
+  showText(['YIPPPPIIIEEEEE!  🎉'], /*bouncy=*/true);
+  burst(30);
+  await sleep(900);
+  burst(18);
+
+  await sleep(2900);
+
+  /* ╔══════════════════════════════════════════╗
+     ║  SCENE 3 — Sequential messages           ║
+     ╚══════════════════════════════════════════╝ */
+
+  /* — Message 1 — */
+  clearText(); scatter(); await sleep(900);
+  formText(['DO YOU KNOW MEESSSS?']);
+  await sleep(1720);
+  showText(['DO YOU KNOW MEESSSS? 🦋']);
+  await sleep(2900);
+
+  /* — Message 2 — */
+  clearText(); scatter(); await sleep(860);
+  formText(['CHINTU IS SO', 'PROUD OF YOU!']);
+  await sleep(1750);
+  showText(['CHINTU IS SO', 'PROUD OF YOU! 💙']);
+  burst(14);
+  await sleep(3100);
+
+  /* — Message 3 — */
+  clearText(); scatter(); await sleep(860);
+  formText(["YOU'RE A GENIUS,", 'A FASHUN ICON,', '& SO PREETTY! ✨']);
+  await sleep(1800);
+  showText(["YOU'RE A GENIUS,", 'A FASHUN ICON,', '& SO PREETTY! ✨']);
+  burst(24);
+  await sleep(3400);
+
+  /* ╔══════════════════════════════════════════╗
+     ║  FLOWER RAIN + HAM PAM message           ║
+     ╚══════════════════════════════════════════╝ */
+  startFlowers();
+  burst(20);
+  await sleep(950);
+  clearText(); scatter(); await sleep(760);
+
+  showText([
+    'PLEASE ALWAYYYSSS',
+    'STAY HAM PAM AND',
+    'KEEEPPPP SMILINGGGG 🌸',
+  ]);
+  burst(18);
+  await sleep(4500);
+
+  /* ╔══════════════════════════════════════════╗
+     ║  FINAL SCENE — Butterfly with bouquet    ║
+     ╚══════════════════════════════════════════╝ */
+  clearText();
+
+  /* All small butterflies fade away */
+  bfs.forEach((b,i)=>{
+    b.st='hidden';
+    setTimeout(()=>{ b.el.style.opacity='0'; }, i*55);
+  });
+  await sleep(1550);
+
+  /* Grand butterfly entrance with jasmine bouquet */
+  const trailTimer = showFinalButterfly();
+  burst(24);
+  await sleep(4000);
+  clearInterval(trailTimer);
+
+  /* Small butterflies return and swirl */
+  bfs.forEach((b,i)=>{
+    setTimeout(()=>{
+      b.x=rng(0,W()-80); b.y=rng(0,H()-80);
+      b.vx=rng(-1.5,1.5); b.vy=rng(-1.5,1.5);
+      b.el.style.left=b.x+'px'; b.el.style.top=b.y+'px';
+      b.el.style.opacity='1';
+      b.st='float';
+    }, i*88);
+  });
+  await sleep(1700);
+
+  /* Butterflies form final text */
+  formText(['THISSS IS', 'FOR YOUUUU!']);
+  burst(42);
+  await sleep(1750);
+
+  /* Final text appears with bounce */
+  showText(['THISSS IS', 'FOR YOUUUU! 💙✨'], /*bouncy=*/true);
+  burst(30);
+
+  /* Gentle zoom-in on final text */
+  setTimeout(()=>{
+    if(txtWrap) {
+      txtWrap.style.transition='transform 2.2s cubic-bezier(.25,.46,.45,.94)';
+      txtWrap.style.transform='scale(1.09)';
+    }
+  }, 1200);
+
+  /* ✨ Eternal sparkle finale */
+  setInterval(()=>burst(5), 1750);
+}
+
+/* 🚀 Start the magic! */
+run();
+</script>
+</body>
+</html>
